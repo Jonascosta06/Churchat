@@ -1,0 +1,117 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Tela inteira */
+body,
+html {
+  width: 100%;
+  height: 100%;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f2f5;
+}
+
+/* Caixa de mensagens */
+.mensagem-container {
+  width: 90%;
+  max-width: 500px;
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Cabeçalho */
+.header {
+  padding: 10px;
+  background-color: #0084ff;
+  color: white;
+  text-align: center;
+}
+
+/* Área de mensagens */
+.chat {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mensagem {
+  padding: 10px;
+  border-radius: 8px;
+  max-width: 80%;
+  color: white;
+  font-size: 14px;
+}
+
+.enviada {
+  align-self: flex-end;
+  background-color: #0084ff;
+}
+
+.recebida {
+  align-self: flex-start;
+  background-color: #e5e5ea;
+  color: black;
+}
+
+/* Área de digitação */
+.input-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 10px;
+  background-color: #f0f2f5;
+  gap: 5px;
+}
+
+.input-container input {
+  flex: 1 1 60%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  min-width: 120px;
+}
+
+/* Botão de mensagem rápida */
+.botao-mensagem,
+.mensagens-rapidas {
+  flex: 1 1 auto;
+  padding: 10px;
+  background-color: #0084ff;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 12px;
+  cursor: pointer;
+  min-width: 80px;
+}
+
+/* Responsividade */
+@media (max-width: 400px) {
+  .mensagem-container {
+    height: 90vh;
+  }
+
+  .input-container input {
+    font-size: 12px;
+  }
+
+  .botao-mensagem,
+  .mensagens-rapidas {
+    font-size: 12px;
+  }
+}

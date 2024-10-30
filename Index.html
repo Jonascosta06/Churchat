@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aplicativo de Mensagem</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Anton&family=Karla:ital,wght@0,200..800;1,200..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Teko:wght@300..700&display=swap");
+      /* Reset básico */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      /* Tela inteira */
+      body,
+      html {
+        width: 100%;
+        height: 100%;
+        font-family: "Poppins", sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f0f2f5;
+      }
+
+      /* Caixa de mensagens */
+      .mensagem-container {
+        width: 90%;
+        height: 95vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: #5c5d5e;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Cabeçalho */
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px;
+        background-color: #0084ff;
+        color: white;
+        font-size: 16px;
+        position: relative;
+      }
+
+      /* Menu hamburguer */
+      .menu-hamburguer {
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+      }
+
+      .linha {
+        width: 25px;
+        height: 3px;
+        background-color: white;
+        margin: 3px 0;
+      }
+
+      /* Menu suspenso */
+      .menu-suspenso {
+        position: absolute;
+        background-color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+        display: none;
+        flex-direction: column;
+        padding: 10px;
+        z-index: 1;
+      }
+
+      .menu-suspenso.active {
+        display: flex;
+      }
+
+      .menu-opcao {
+        padding: 8px;
+        cursor: pointer;
+        color: #0084ff;
+        transition: background 0.2s;
+      }
+
+      .menu-opcao:hover {
+        background-color: #f0f2f5;
+      }
+
+      /* Modal */
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        visibility: hidden;
+        opacity: 0;
+        transition: visibility 0s, opacity 0.3s;
+      }
+
+      .modal.active {
+        visibility: visible;
+        opacity: 1;
+      }
+
+      .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        width: 80%;
+        max-width: 300px;
+        text-align: center;
+      }
+
+      .modal-content input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+      }
+
+      .modal-content button {
+        margin-top: 15px;
+        padding: 10px;
+        background-color: #0084ff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      /* Área de mensagens */
+      .chat {
+        flex: 1;
+        padding: 8px;
+        max-height: 60%;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .mensagem {
+        padding: 8px;
+        border-radius: 8px;
+        max-width: 75%;
+        font-size: 13px;
+        color: white;
+      }
+
+      .enviada {
+        align-self: flex-end;
+        background-color: #0084ff;
+      }
+
+      .recebida {
+        align-self: flex-start;
+        background-color: #e5e5ea;
+        color: black;
+      }
+
+      /* Área de digitação */
+      .input-container {
+        display: flex;
+        align-items: center;
+        padding: 8px;
+        background-color: #f0f2f5;
+        gap: 5px;
+      }
+
+      .input-container input {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        font-size: 13px;
+      }
+
+      .botao-mensagem {
+        padding: 10px;
+        background-color: #0084ff;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        font-size: 13px;
+        cursor: pointer;
+      }
+
+      .mensagens-rapidas-header {
+        background-color: #006bb3;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        width: 40px;
+        min-width: 40px;
+        text-align: center;
+        overflow: hidden;
+        appearance: none; /* Remove o estilo padrão */
+      }
+
+      /* Responsividade */
+      @media (max-width: 400px) {
+        .mensagem-container {
+          height: 95vh;
+        }
+
+        .header {
+          font-size: 14px;
+        }
+
+        .input-container input,
+        .botao-mensagem {
+          font-size: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="mensagem-container">
+      <div class="header">
+        <div>Churchat</div>
+        <select
+          class="mensagens-rapidas-header"
+          onchange="inserirMensagemRapida(this)"
+        >
+          <option value="">⚡️</option>
+          <option value="Olá! Como vai?">Olá! Como vai?</option>
+          <option value="Posso te ajudar com algo?">
+            Posso te ajudar com algo?
+          </option>
+          <option value="Aguardo seu retorno.">Aguardo seu retorno.</option>
+        </select>
+        <div class="menu-hamburguer" onclick="toggleMenu()">
+          <div class="linha"></div>
+          <div class="linha"></div>
+          <div class="linha"></div>
+        </div>
+        <div class="menu-suspenso" id="menuSuspenso">
+          <div class="menu-opcao" onclick="abrirModal()">
+            Adicionar Mensagem Rápida
+          </div>
+          <div class="menu-opcao" onclick="abrirModalCadastro()">Cadastro</div>
+        </div>
+      </div>
+      <div class="chat">
+        <div class="mensagem enviada">Olá, tudo bem?</div>
+        <div class="mensagem recebida">Oi! Tudo sim, e você?</div>
+      </div>
+      <div class="input-container">
+        <input type="text" placeholder="Digite sua mensagem..." />
+        <button class="botao-mensagem">Enviar</button>
+      </div>
+    </div>
+
+    <!-- Modal para adicionar mensagem rápida -->
+    <div class="modal" id="modal">
+      <div class="modal-content">
+        <h2>Nova Mensagem Rápida</h2>
+        <input
+          type="text"
+          id="novaMensagem"
+          placeholder="Digite a mensagem..."
+        />
+        <button onclick="adicionarMensagemRapida()">Adicionar</button>
+      </div>
+    </div>
+
+    <!-- Modal para exibir QR Code de cadastro -->
+    <div class="modal" id="modalCadastro">
+      <div class="modal-content">
+        <h2>QR Code para Cadastro</h2>
+        <img
+          src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://openai.com"
+          alt="QR Code"
+          style="width: 100%; height: auto"
+        />
+        <button onclick="fecharModalCadastro()">Fechar</button>
+      </div>
+    </div>
+
+    <script>
+      // Abre o modal para adicionar mensagem rápida
+      function abrirModal() {
+        document.getElementById("modal").classList.add("active");
+      }
+
+      // Fecha o modal para adicionar mensagem rápida
+      function fecharModal() {
+        document.getElementById("modal").classList.remove("active");
+      }
+
+      // Adiciona a nova mensagem ao seletor
+      function adicionarMensagemRapida() {
+        const novaMensagem = document.getElementById("novaMensagem").value;
+        if (novaMensagem.trim() !== "") {
+          const seletor = document.querySelector(".mensagens-rapidas-header");
+          const novaOpcao = document.createElement("option");
+          novaOpcao.value = novaMensagem;
+          novaOpcao.textContent = novaMensagem;
+          seletor.appendChild(novaOpcao);
+        }
+        fecharModal();
+      }
+
+      // Insere a mensagem rápida selecionada no campo de entrada
+      function inserirMensagemRapida(elemento) {
+        const input = document.querySelector(".input-container input");
+        input.value = elemento.value;
+        elemento.selectedIndex = 0;
+      }
+
+      // Alterna a exibição do menu
+      function toggleMenu() {
+        document.getElementById("menuSuspenso").classList.toggle("active");
+      }
+
+      // Abre o modal de cadastro com QR Code
+      function abrirModalCadastro() {
+        document.getElementById("modalCadastro").classList.add("active");
+      }
+
+      // Fecha o modal de cadastro com QR Code
+      function fecharModalCadastro() {
+        document.getElementById("modalCadastro").classList.remove("active");
+      }
+
+      // Fecha o modal ao clicar fora dele
+      window.onclick = function (event) {
+        if (event.target === document.getElementById("modal")) {
+          fecharModal();
+        } else if (event.target === document.getElementById("modalCadastro")) {
+          fecharModalCadastro();
+        }
+      };
+    </script>
+  </body>
+</html>
